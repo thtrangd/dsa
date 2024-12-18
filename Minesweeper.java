@@ -16,10 +16,10 @@ public class Minesweeper {
     }
 
     int tileSize = 70;
-    int numRows = 9;
-    int numCols = numRows;
-    int boardWidth = numCols * tileSize;
-    int boardHeight = numRows * tileSize;
+    int numRows;
+    int numCols;
+    int boardWidth;
+    int boardHeight;
 
     JFrame frame = new JFrame("Floral Maze");
     JLabel textLabel = new JLabel();
@@ -29,15 +29,19 @@ public class Minesweeper {
     JButton playAgainButton = new JButton("Play Again");
     JButton backHomeButton = new JButton("Back Home");
 
-    int mineCount = 10;
-    MineTile[][] board = new MineTile[numRows][numCols];
+    int mineCount;
+    MineTile[][] board;
     ArrayList<MineTile> mineList;
     Random random = new Random();
 
     int tilesClicked = 0;
     boolean gameOver = false;
 
-    public Minesweeper() {
+    // Constructor now accepts difficulty level
+    public Minesweeper(int difficulty) {
+        // Adjusting rows, columns, and mine count based on difficulty
+        setDifficulty(difficulty);
+
         frame.setSize(boardWidth, boardHeight + tileSize * 2);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -47,7 +51,7 @@ public class Minesweeper {
         textLabel.setFont(new Font("Monospaced", Font.BOLD, 20));
         textLabel.setForeground(new Color(139, 131, 134));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
-        textLabel.setText("Minesweeper: " + mineCount);
+        textLabel.setText("Floral Maze: " + mineCount);
         textLabel.setOpaque(true);
 
         textPanel.setLayout(new BorderLayout());
@@ -78,12 +82,42 @@ public class Minesweeper {
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         initializeBoard();
-        frame.setVisible(true);
         setMines();
+        frame.setVisible(true);
+    }
+
+    // Method to set difficulty settings
+    private void setDifficulty(int difficulty) {
+        switch (difficulty) {
+            case 10:
+                numRows = 9;
+                numCols = 9;
+                mineCount = 10;
+                break;
+            case 20:
+                numRows = 9;
+                numCols = 12;
+                mineCount = 20;
+                break;
+            case 30:
+                numRows = 9;
+                numCols = 14;
+                mineCount = 30;
+                break;
+            default:
+                numRows = 9;
+                numCols = 9;
+                mineCount = 10;
+                break;
+        }
+
+        boardWidth = numCols * tileSize;
+        boardHeight = numRows * tileSize;
     }
 
     void initializeBoard() {
         boardPanel.removeAll();
+        board = new MineTile[numRows][numCols];
         for (int r = 0; r < numRows; r++) {
             for (int c = 0; c < numCols; c++) {
                 MineTile tile = new MineTile(r, c);
@@ -92,27 +126,26 @@ public class Minesweeper {
                 tile.setFocusable(false);
                 tile.setMargin(new Insets(0, 0, 0, 0));
                 tile.setFont(new Font("Monospaced", Font.PLAIN, 30));
-                tile.setForeground(Color.GRAY); // Đặt màu xám riêng cho bông hoa ✿
+                tile.setForeground(Color.GRAY); // Màu xám cho bông hoa ✿
                 tile.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mousePressed(MouseEvent e) {
                         if (gameOver) return;
 
                         MineTile tile = (MineTile) e.getSource();
-                        if (e.getButton() == MouseEvent.BUTTON1) {
+                        if (e.getButton() == MouseEvent.BUTTON1) {  // Left-click
                             if (tile.getText().isEmpty()) {
                                 if (mineList.contains(tile)) {
-                                    revealMines();
+                                    revealMines(); // Game over, hiện mìn
                                 } else {
                                     checkMine(tile.r, tile.c);
                                 }
                             }
-                        } else if (e.getButton() == MouseEvent.BUTTON3) {
+                        } else if (e.getButton() == MouseEvent.BUTTON3) {  // Right-click
                             if (tile.getText().isEmpty() && tile.isEnabled()) {
-                                tile.setText("✿");
-                                
+                                tile.setText("✿");  // Đánh dấu hoa
                             } else if (tile.getText().equals("✿")) {
-                                tile.setText("");
+                                tile.setText("");  // Xóa dấu hoa
                             }
                         }
                     }
@@ -142,7 +175,7 @@ public class Minesweeper {
     void revealMines() {
         for (MineTile tile : mineList) {
             tile.setText("❀");
-            tile.setForeground(new Color(255, 105, 180)); // Màu hot pink cho bom
+            tile.setForeground(new Color(255, 105, 180));  // Màu hot pink cho mìn
         }
         gameOver = true;
         textLabel.setText("Flower Trap Activated (~_~メ)");
@@ -171,6 +204,7 @@ public class Minesweeper {
         if (minesFound > 0) {
             tile.setText(Integer.toString(minesFound));
         } else {
+            // Tiếp tục kiểm tra các ô xung quanh nếu không có mìn
             checkMine(r - 1, c - 1);
             checkMine(r - 1, c);
             checkMine(r - 1, c + 1);
@@ -203,7 +237,7 @@ public class Minesweeper {
     }
 
     void goHome() {
-        frame.dispose(); // Close the Minesweeper frame
-        App.showHomeScreen(); // Return to the home screen
+        frame.dispose();  // Đóng cửa sổ Minesweeper
+        App.showHomeScreen();  // Quay lại màn hình chính
     }
 }

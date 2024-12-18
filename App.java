@@ -59,7 +59,7 @@ public class App {
         // Sự kiện khi nhấn Play
         playButton.addActionListener((ActionEvent e) -> {
             homeFrame.dispose(); // Đóng màn hình chính
-            new Minesweeper();   // Chạy Minesweeper
+            showLevelScreen(); // Chuyển sang màn hình chọn cấp độ
         });
 
         // Thêm nút Play vào vị trí thích hợp
@@ -69,5 +69,87 @@ public class App {
         // Hiển thị giao diện
         homeFrame.add(homePanel);
         homeFrame.setVisible(true);
+    }
+
+    public static void showLevelScreen() {
+        // Tạo JFrame mới cho màn hình chọn cấp độ
+        JFrame levelFrame = new JFrame("Your Pick!");
+        levelFrame.setSize(630, 700);
+        levelFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        levelFrame.setLocationRelativeTo(null);
+        levelFrame.setResizable(false);
+
+        // Tạo JPanel với GridBagLayout
+        JPanel levelPanel = new JPanel();
+        levelPanel.setBackground(new Color(255, 240, 245)); // Nền hồng pastel
+        levelPanel.setLayout(new GridBagLayout()); // Căn giữa các thành phần
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        // Tiêu đề
+        JLabel levelLabel = new JLabel("Bloom smart, or get stuck!");
+        levelLabel.setFont(new Font("Monospaced", Font.BOLD, 30));
+        levelLabel.setForeground(new Color(85, 85, 85)); // Màu xám
+        gbc.gridy = 0;
+        levelPanel.add(levelLabel, gbc);
+
+        // Nút dễ
+        JButton easyButton = new JButton("Easy");
+        easyButton.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        easyButton.setForeground(new Color(139, 131, 134)); // Màu chữ giống Back Home
+        easyButton.setPreferredSize(new Dimension(200, 40));
+        easyButton.setFocusable(false);
+        easyButton.setBackground(Color.WHITE);
+        easyButton.setBorder(BorderFactory.createLineBorder(new Color(139, 131, 134), 1, true));
+        easyButton.setOpaque(true);
+
+        easyButton.addActionListener((ActionEvent e) -> {
+            levelFrame.dispose();
+            new Minesweeper(10); // 10 mines for Easy level
+        });
+
+        gbc.gridy = 1;
+        levelPanel.add(easyButton, gbc);
+
+        // Nút vừa
+        JButton mediumButton = new JButton("Medium");
+        mediumButton.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        mediumButton.setForeground(new Color(139, 131, 134)); // Màu chữ giống Back Home
+        mediumButton.setPreferredSize(new Dimension(200, 40));
+        mediumButton.setFocusable(false);
+        mediumButton.setBackground(Color.WHITE);
+        mediumButton.setBorder(BorderFactory.createLineBorder(new Color(139, 131, 134), 1, true));
+        mediumButton.setOpaque(true);
+
+        mediumButton.addActionListener((ActionEvent e) -> {
+            levelFrame.dispose();
+            new Minesweeper(20); // 20 mines for Medium level
+        });
+
+        gbc.gridy = 2;
+        levelPanel.add(mediumButton, gbc);
+
+        // Nút khó
+        JButton hardButton = new JButton("Hard");
+        hardButton.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        hardButton.setForeground(new Color(139, 131, 134)); // Màu chữ giống Back Home
+        hardButton.setPreferredSize(new Dimension(200, 40));
+        hardButton.setFocusable(false);
+        hardButton.setBackground(Color.WHITE);
+        hardButton.setBorder(BorderFactory.createLineBorder(new Color(139, 131, 134), 1, true));
+        hardButton.setOpaque(true);
+
+        hardButton.addActionListener((ActionEvent e) -> {
+            levelFrame.dispose();
+            new Minesweeper(30); // 30 mines for Hard level
+        });
+
+        gbc.gridy = 3;
+        levelPanel.add(hardButton, gbc);
+
+        levelFrame.add(levelPanel);
+        levelFrame.setVisible(true);
     }
 }
